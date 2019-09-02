@@ -100,8 +100,7 @@ def parse_out_image(keypoints, output_image, msec):
         y = max(y-5, 0)
         xb = min(xb+5, w)
         yb = min(yb+5, h)
-        cv2.rectangle(output_image, (x, y), (xb, yb), (0, 0, 255),
-                      thickness=2)
+        cv2.rectangle(output_image, (x, y), (xb, yb), (0, 0, 255), 2)
         cv2.putText(output_image, action, (x+5, y-5),
                     cv2.FONT_HERSHEY_SIMPLEX, 1.0, (128, 255, 0), 2)
 
