@@ -20,7 +20,7 @@ src_config = [
      "00:26 — 00:40 nap",
      "00:44 — 00:53 nap"],
     ["00:01 — 00:11 sleep",
-     "00:14 — 00:25 play_phone",
+     "00:14 — 00:25 call",
      "00:29 — 00:53 nap"],
     ["00:01 — 00:26 sleep",
      "00:26 — 00:39 nap",
@@ -51,7 +51,7 @@ def get_video_pose(video_path, output_path):
     print('fps: ', fps)
     print('size: ', size)
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter('output.avi', fourcc, fps, size)
+    out = cv2.VideoWriter(output_path, fourcc, fps, size)
     i = 0
     openpose = get_openpose()
     while True:
@@ -88,7 +88,7 @@ def parse_out_image(keypoints, output_image, msec):
     rects = [(int(min(x)), int(min(y)), int(max(x)), int(max(y)),
               sum(x)/len(x))
              for x, y in zip(px, py)]
-    rects = sorted(rects, key=lambda x: x[4])
+    rects = sorted(rects, key=lambda x: x[-1])
 
     h, w, _ = output_image.shape
     for conf, rect in zip(config, rects):
@@ -97,10 +97,10 @@ def parse_out_image(keypoints, output_image, msec):
         if action is None:
             continue
         x, y, xb, yb, _ = rect
-        x = max(x-5, 0)
-        y = max(y-5, 0)
-        xb = min(xb+5, w)
-        yb = min(yb+5, h)
+        x = max(x-9, 0)
+        y = max(y-20, 0)
+        xb = min(xb+9, w)
+        yb = min(yb+9, h)
         cv2.rectangle(output_image, (x, y), (xb, yb), (0, 0, 255),
                       thickness=2)
         cv2.putText(output_image, action, (x+5, y-5),

@@ -17,7 +17,7 @@ def get_video_pose(openpose, video_path, output_path):
     print('fps: ', fps)
     print('size: ', size)
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter('output.avi', fourcc, fps, size)
+    out = cv2.VideoWriter(output_path, fourcc, fps, size)
     i = 0
     while True:
         rval, frame = vc.read()
