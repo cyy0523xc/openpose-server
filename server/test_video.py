@@ -34,7 +34,8 @@ def parse_config():
     pattern = re.compile('00:(\\d+) — 00:(\\d+) (.+)')
     config = []*len(src_config)
     for index, person_config in enumerate(src_config):
-        config[index] = [pattern.findall(line)[0] for line in person_config]
+        print(pattern.findall(person_config[0]))
+        config[index] = [pattern.findall(rule)[0] for rule in person_config]
         config[index] = [(int(i[0])*1000, int(i[1])*1000, i[2])
                          for i in config]
 
