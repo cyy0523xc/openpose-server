@@ -80,10 +80,10 @@ def parse_out_image(keypoints, output_image, msec):
     if len(keypoints) != 5:
         return output_image
 
-    px, py = []*5, []*5
-    for i, p in enumerate(keypoints):
-        px[i] = [r[0] for r in p if r[2] > 0.1]
-        py[i] = [r[1] for r in p if r[2] > 0.1]
+    px, py = [], []
+    for p in keypoints:
+        px.append([r[0] for r in p if r[2] > 0.1])
+        py.append([r[1] for r in p if r[2] > 0.1])
 
     rects = [(min(x), min(y), max(x), max(y), sum(x)/len(x))
              for x, y in zip(px, py)]
