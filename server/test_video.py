@@ -85,9 +85,10 @@ def parse_out_image(keypoints, output_image, msec):
         px.append([r[0] for r in p if r[2] > 0.1])
         py.append([r[1] for r in p if r[2] > 0.1])
 
-    rects = [(min(x), min(y), max(x), max(y), sum(x)/len(x))
+    rects = [(int(min(x)), int(min(y)), int(max(x)), int(max(y)),
+              sum(x)/len(x))
              for x, y in zip(px, py)]
-    rects = sorted(rects, key=lambda x: x[2])
+    rects = sorted(rects, key=lambda x: x[4])
 
     h, w, _ = output_image.shape
     for conf, rect in zip(config, rects):
@@ -100,7 +101,8 @@ def parse_out_image(keypoints, output_image, msec):
         y = max(y-5, 0)
         xb = min(xb+5, w)
         yb = min(yb+5, h)
-        cv2.rectangle(output_image, (x, y), (xb, yb), (0, 0, 255), 2)
+        cv2.rectangle(output_image, (x, y), (xb, yb), (0, 0, 255),
+                      thickness=2)
         cv2.putText(output_image, action, (x+5, y-5),
                     cv2.FONT_HERSHEY_SIMPLEX, 1.0, (128, 255, 0), 2)
 
