@@ -9,12 +9,13 @@ from extract_pose_video import get_video_pose
 
 def image_pose(image_path, output_path=None):
     openpose = get_openpose()
-    return get_image_pose(openpose, image_path, output_path=output_path)
+    points = get_image_pose(openpose, image_path, output_path=output_path)
+    return points.tolist()
 
 
 def video_pose(video_path, output_path='out_video.avi'):
     openpose = get_openpose()
-    return get_video_pose(openpose, video_path, output_path)
+    get_video_pose(openpose, video_path, output_path)
 
 
 if __name__ == '__main__':
