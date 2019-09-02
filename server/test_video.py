@@ -78,6 +78,9 @@ def get_video_pose(video_path, output_path):
 
 def parse_out_image(keypoints, output_image, msec):
     """处理输出图像"""
+    h, w, _ = output_image.shape
+    cv2.putText(output_image, 'DeeAo AI Team', (w-250, h-12),
+                cv2.FONT_HERSHEY_SIMPLEX, 1.0, (128, 255, 0), 2)
     if len(keypoints) != 5:
         return output_image
 
@@ -91,7 +94,6 @@ def parse_out_image(keypoints, output_image, msec):
              for x, y in zip(px, py)]
     rects = sorted(rects, key=lambda x: x[-1])
 
-    h, w, _ = output_image.shape
     for conf, rect in zip(config, rects):
         # 判断第i个人当前的状态
         action = get_action(msec, conf)
