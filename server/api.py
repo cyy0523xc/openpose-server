@@ -19,4 +19,4 @@ if __name__ == '__main__':
     from fireRest import API, app
     API(image_pose)
     API(video_pose)
-    app.run(port=20950)
+    app.run(port=20950, host='0.0.0.0')
