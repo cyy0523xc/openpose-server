@@ -4,10 +4,9 @@
 # Author: alex
 # Created Time: 2019年09月02日 星期一 10时18分10秒
 import cv2
-from extract_pose import openpose
 
 
-def get_video_pose(video_path, output_path):
+def get_video_pose(openpose, video_path, output_path):
     vc = cv2.VideoCapture(video_path)
     if vc.isOpened() is False:
         raise Exception('video open false!')

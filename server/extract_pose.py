@@ -25,14 +25,19 @@ params["disable_blending"] = False
 params["default_model_folder"] = MODEL_ROOT
 # Construct OpenPose object allocates GPU memory
 
-openpose = OpenPose(params)
+
+def get_openpose():
+    return OpenPose(params)
 
 
-def get_image_pose(image_path, display_image=False, output_path=None):
+def get_image_pose(openpose, image_path,
+                   display_image=False, output_path=None):
     """获取一个图片的人体关键点"""
     # Read new image
     img = cv2.imread(image_path)
     # Output keypoints and the image with the human skeleton blended on it
+    # 人体 Body part 位置和检测的置信度(confidence)
+    # 格式：[x, y, confidence]
     keypoints, output_image = openpose.forward(img, True)
     # Print the human pose keypoints, i.e., a [#people x #keypoints x 3]-dimensional numpy object with the keypoints of all the people on that image
     if display_image:
@@ -56,5 +61,6 @@ if __name__ == '__main__':
     else:
         raise Exception('need params: image_path')
 
-    keypoints = get_image_pose(image_path, output_path=output_path)
+    openpose = get_openpose()
+    keypoints = get_image_pose(openpose, image_path, output_path=output_path)
     print(keypoints)
