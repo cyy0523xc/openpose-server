@@ -3,25 +3,11 @@
 # 参考：https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/v1.4.0/examples/tutorial_python/1_extract_pose.py
 # Author: alex
 # Created Time: 2019年09月02日 星期一 09时48分42秒
-import sys
 import cv2
+from openpose.openpose import OpenPose
 
 # 路径配置
-PYTHON_API_ROOT = '/opt/openpose/python/'
 MODEL_ROOT = "/opt/openpose/models/"
-
-# Remember to add your installation path here
-# Option a
-sys.path.append(PYTHON_API_ROOT);
-# Option b
-# If you run `make install` (default path is `/usr/local/python` for Ubuntu), you can also access the OpenPose/python module from there. This will install OpenPose and the python library at your desired installation path. Ensure that this is in your python path in order to use it.
-# sys.path.append('/usr/local/python')
-
-# Parameters for OpenPose. Take a look at C++ OpenPose example for meaning of components. Ensure all below are filled
-try:
-    from openpose import OpenPose
-except:
-    raise Exception('Error: OpenPose library could not be found. Did you enable `BUILD_PYTHON` in CMake and have this Python script in the right folder?')
 
 params = dict()
 params["logging_level"] = 3
