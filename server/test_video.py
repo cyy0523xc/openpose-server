@@ -99,7 +99,7 @@ def parse_out_image(keypoints, output_image, msec):
             continue
         x, y, xb, yb, _ = rect
         x = max(x-9, 0)
-        y = max(y-20, 0)
+        y = max(y-28, 0)
         xb = min(xb+9, w)
         yb = min(yb+9, h)
         cv2.rectangle(output_image, (x, y), (xb, yb), (0, 0, 255),
