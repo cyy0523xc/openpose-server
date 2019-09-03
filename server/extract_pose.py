@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# 参考：https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/v1.4.0/examples/tutorial_python/1_extract_pose.py
+# 参考：https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/v1.5.0/examples/tutorial_api_python/01_body_from_image.py
 # Author: alex
 # Created Time: 2019年09月02日 星期一 09时48分42秒
 import cv2
