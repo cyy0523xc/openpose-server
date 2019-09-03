@@ -4,12 +4,18 @@
 # Author: alex
 # Created Time: 2019年09月02日 星期一 10时18分10秒
 import cv2
+from openpose import pyopenpose as op
+from extract_pose import params
 
 
-def get_video_pose(openpose, video_path, output_path):
+def get_video_pose(video_path, output_path):
     vc = cv2.VideoCapture(video_path)
     if vc.isOpened() is False:
         raise Exception('video open false!')
+
+    opWrapper = op.WrapperPython()
+    opWrapper.configure(params)
+    opWrapper.start()
 
     fps = vc.get(cv2.CAP_PROP_FPS)
     size = (int(vc.get(cv2.CAP_PROP_FRAME_WIDTH)),
@@ -24,7 +30,12 @@ def get_video_pose(openpose, video_path, output_path):
         if rval is False:
             break
 
-        _, output_image = openpose.forward(frame, True)
+        # Process Image
+        datum = op.Datum()
+        datum.cvInputData = frame
+        opWrapper.emplaceAndPop([datum])
+        output_image = datum.cvOutputData
+
         out.write(output_image)
         i += 1
         if i % 100 == 0:

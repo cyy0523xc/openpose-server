@@ -4,42 +4,48 @@
 # Author: alex
 # Created Time: 2019年09月02日 星期一 09时48分42秒
 import cv2
-from openpose.openpose import OpenPose
+# from openpose.openpose import OpenPose
+from openpose import pyopenpose as op
 
 # 路径配置
 MODEL_ROOT = "/opt/openpose/models/"
 
 params = dict()
-params["logging_level"] = 3
-params["output_resolution"] = "-1x-1"
-params["net_resolution"] = "-1x368"
-params["model_pose"] = "BODY_25"
-params["alpha_pose"] = 0.6
-params["scale_gap"] = 0.3
-params["scale_number"] = 1
-params["render_threshold"] = 0.05
+params["model_folder"] = MODEL_ROOT
+# params["logging_level"] = 3
+# params["output_resolution"] = "-1x-1"
+# params["net_resolution"] = "-1x368"
+# params["model_pose"] = "BODY_25"
+# params["alpha_pose"] = 0.6
+# params["scale_gap"] = 0.3
+# params["scale_number"] = 1
+# params["render_threshold"] = 0.05
 # If GPU version is built, and multiple GPUs are available, set the ID here
-params["num_gpu_start"] = 0
-params["disable_blending"] = False
+# params["num_gpu_start"] = 0
+# params["disable_blending"] = False
 # Ensure you point to the correct path where models are located
-params["default_model_folder"] = MODEL_ROOT
+# params["default_model_folder"] = MODEL_ROOT
 # Construct OpenPose object allocates GPU memory
 
 
-def get_openpose():
-    return OpenPose(params)
-
-
-def get_image_pose(openpose, image_path,
-                   display_image=False, output_path=None):
+def get_image_pose(image_path, display_image=False, output_path=None):
     """获取一个图片的人体关键点"""
     # Read new image
     img = cv2.imread(image_path)
+
+    opWrapper = op.WrapperPython()
+    opWrapper.configure(params)
+    opWrapper.start()
+
+    # Process Image
+    datum = op.Datum()
+    datum.cvInputData = img
+    opWrapper.emplaceAndPop([datum])
     # Output keypoints and the image with the human skeleton blended on it
     # 人体 Body part 位置和检测的置信度(confidence)
     # 格式：[x, y, confidence]
-    keypoints, output_image = openpose.forward(img, True)
-    # Print the human pose keypoints, i.e., a [#people x #keypoints x 3]-dimensional numpy object with the keypoints of all the people on that image
+    keypoints, output_image = datum.poseKeypoints, datum.cvOutputData
+
     if display_image:
         # Display the image
         cv2.imshow("output", output_image)
@@ -61,6 +67,5 @@ if __name__ == '__main__':
     else:
         raise Exception('need params: image_path')
 
-    openpose = get_openpose()
-    keypoints = get_image_pose(openpose, image_path, output_path=output_path)
+    keypoints = get_image_pose(image_path, output_path=output_path)
     print(keypoints)

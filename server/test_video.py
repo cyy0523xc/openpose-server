@@ -5,7 +5,8 @@
 # Created Time: 2019年09月02日 星期一 14时21分56秒
 import re
 import cv2
-from extract_pose import get_openpose
+from openpose import pyopenpose as op
+from extract_pose import params
 
 # 配置动作
 src_config = [
@@ -46,6 +47,10 @@ def get_video_pose(video_path, output_path):
     if vc.isOpened() is False:
         raise Exception('video open false!')
 
+    opWrapper = op.WrapperPython()
+    opWrapper.configure(params)
+    opWrapper.start()
+
     fps = vc.get(cv2.CAP_PROP_FPS)
     size = (int(vc.get(cv2.CAP_PROP_FRAME_WIDTH)),
             int(vc.get(cv2.CAP_PROP_FRAME_HEIGHT)))
@@ -54,14 +59,18 @@ def get_video_pose(video_path, output_path):
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
     out = cv2.VideoWriter(output_path, fourcc, fps, size)
     i = 0
-    openpose = get_openpose()
     while True:
         rval, frame = vc.read()
         if rval is False:
             break
 
+        # Process Image
+        datum = op.Datum()
+        datum.cvInputData = frame
+        opWrapper.emplaceAndPop([datum])
+        keypoints, output_image = datum.poseKeypoints, datum.cvOutputData
+
         msec = int(vc.get(cv2.CAP_PROP_POS_MSEC))
-        keypoints, output_image = openpose.forward(frame, True)
         output_image = parse_out_image(keypoints, output_image, msec)
         out.write(output_image)
         i += 1
