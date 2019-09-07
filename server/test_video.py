@@ -33,7 +33,7 @@ src_config = [
     [
         # "00:02 — 00:03 hurdle",
         "00:01 — 00:02 nap",
-        "00:03 — 00:08 sleep",
+        "00:03 — 00:10 sleep",
     ],
 ]
 config = None
