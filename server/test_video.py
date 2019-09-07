@@ -95,7 +95,7 @@ def parse_out_image(keypoints, output_image, msec):
     h, w, _ = output_image.shape
     cv2.putText(output_image, 'DeeAo AI Team', (w-250, h-12),
                 cv2.FONT_HERSHEY_SIMPLEX, 1.0, (128, 255, 0), 2)
-    if len(keypoints) != 5:
+    if keypoints is None or len(keypoints) != 5:
         return output_image
 
     px, py = [], []
