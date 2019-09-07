@@ -46,7 +46,7 @@ def parse_config():
     for index, person_config in enumerate(src_config):
         print(pattern.findall(person_config[0]))
         row = [pattern.findall(rule)[0] for rule in person_config]
-        row = [(int(i[0])*1000, int(i[1])*1000, i[2]) for i in row]
+        row = [(int(i[0])*1000, (int(i[1])+1)*1000-1, i[2]) for i in row]
         config.append(row)
 
 
@@ -124,7 +124,7 @@ def parse_out_image(keypoints, output_image, msec):
         yb = [i[3] for i in rects]
         rects = [(int(min(x)), int(min(y)), int(max(xb)), int(max(yb)), 0)]
 
-    print(rects)
+    # print(rects)
     for conf, rect in zip(config, rects):
         # 判断第i个人当前的状态
         action = get_action(msec, conf)
