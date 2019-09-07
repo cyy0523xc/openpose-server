@@ -5,6 +5,7 @@
 # Created Time: 2019年09月02日 星期一 14时21分56秒
 import re
 import cv2
+import numpy as np
 from openpose import pyopenpose as op
 from extract_pose import params
 
@@ -95,8 +96,9 @@ def parse_out_image(keypoints, output_image, msec):
     h, w, _ = output_image.shape
     cv2.putText(output_image, 'DeeAo AI Team', (w-250, h-12),
                 cv2.FONT_HERSHEY_SIMPLEX, 1.0, (128, 255, 0), 2)
-    print(keypoints)
-    if keypoints is None or len(keypoints) != 5:
+    if keypoints is None or np.atleast_1d(keypoints) < 1:
+        return output_image
+    if len(keypoints) != len(src_config):
         return output_image
 
     px, py = [], []
