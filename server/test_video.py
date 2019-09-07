@@ -31,7 +31,9 @@ src_config = [
 ]
 src_config = [
     [
-        "00:02 — 00:03 hurdle",
+        # "00:02 — 00:03 hurdle",
+        "00:01 — 00:02 nap",
+        "00:03 — 00:08 sleep",
     ],
 ]
 config = None
@@ -96,10 +98,14 @@ def parse_out_image(keypoints, output_image, msec):
     h, w, _ = output_image.shape
     cv2.putText(output_image, 'DeeAo AI Team', (w-250, h-12),
                 cv2.FONT_HERSHEY_SIMPLEX, 1.0, (128, 255, 0), 2)
-    if keypoints is None or len(np.atleast_1d(keypoints)) < 2:
+    if len(np.atleast_1d(keypoints)) < 2:
         return output_image
-    if len(keypoints) != len(src_config):
-        return output_image
+
+    # TODO 下面部分是临时的处理
+    if len(src_config) > 1:
+        if len(keypoints) != len(src_config):
+            # TODO 通过keypoints来判断人数并不对
+            return output_image
 
     px, py = [], []
     for p in keypoints:
@@ -109,7 +115,14 @@ def parse_out_image(keypoints, output_image, msec):
     rects = [(int(min(x)), int(min(y)), int(max(x)), int(max(y)),
               sum(x)/len(x))
              for x, y in zip(px, py)]
-    rects = sorted(rects, key=lambda x: x[-1])
+    if len(src_config) > 1:
+        rects = sorted(rects, key=lambda x: x[-1])
+    else:
+        x = [i[0] for i in rects]
+        y = [i[1] for i in rects]
+        xb = [i[2] for i in rects]
+        yb = [i[3] for i in rects]
+        rects = [(int(min(x)), int(min(y)), int(max(xb)), int(max(yb)), 0)]
 
     for conf, rect in zip(config, rects):
         # 判断第i个人当前的状态
