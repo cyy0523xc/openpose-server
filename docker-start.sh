@@ -8,6 +8,7 @@ docker run  -u $(id -u):$(id -g) --rm -ti --runtime=nvidia \
     -p 20950:20950 \
     --name ibbd-openpose \
     -v `pwd`:/opt/openpose/server \
+    -v `pwd`/../demo_images:/opt/openpose/server/demo_images \
     -e PYTHONPATH=/opt/openpose/python \
     -w /opt/openpose/server \
     registry.cn-hangzhou.aliyuncs.com/ibbd/pose:openpose \
