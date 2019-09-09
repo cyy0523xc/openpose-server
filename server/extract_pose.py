@@ -6,6 +6,7 @@
 import cv2
 # from openpose.openpose import OpenPose
 from openpose import pyopenpose as op
+from utils import parse_input_image, parse_output_image
 
 # 路径配置
 MODEL_ROOT = "/opt/openpose/models/"
@@ -28,11 +29,38 @@ params["model_folder"] = MODEL_ROOT
 # Construct OpenPose object allocates GPU memory
 
 
-def get_image_pose(image_path, display_image=False, output_path=None):
+def image_pose(pic='', pic_path='', image_type='jpg',
+               return_data=True, return_image=False):
+    """获取一个图片的人体关键点
+    :param pic 图片对象使用base64编码
+    :param pic_path 图片路径
+    :param image_type 输入图像类型, 取值jpg或者png
+    :param return_data 是否返回数据，默认为True。
+    :param return_image 是否返回图片对象，base64编码，默认值为false
+        当return_image=true时，返回值为{'pic': 图片对象}，pic值也是base64编码
+    :return {'keypoints': [], 'pic': str}
+    """
+    # Read new image
+    img = parse_input_image(pic=pic, pic_path=pic_path, image_type=image_type)
+    keypoints, output_image = do_image_pose(img)
+
+    data = {}
+    if return_data:
+        data['keypoints'] = keypoints.tolist()
+
+    if return_image:
+        # output logo
+        h, w, _ = output_image.shape
+        cv2.putText(output_image, 'DeeAo AI Team', (w-250, h-12),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1.0, (128, 255, 0), 2)
+        data['pic'] = parse_output_image(output_image)
+
+    return data
+
+
+def do_image_pose(img):
     """获取一个图片的人体关键点"""
     # Read new image
-    img = cv2.imread(image_path)
-
     opWrapper = op.WrapperPython()
     opWrapper.configure(params)
     opWrapper.start()
@@ -45,16 +73,7 @@ def get_image_pose(image_path, display_image=False, output_path=None):
     # 人体 Body part 位置和检测的置信度(confidence)
     # 格式：[x, y, confidence]
     keypoints, output_image = datum.poseKeypoints, datum.cvOutputData
-
-    if display_image:
-        # Display the image
-        cv2.imshow("output", output_image)
-        cv2.waitKey(15)
-
-    if output_path is not None:
-        cv2.imwrite(output_path, output_image)
-
-    return keypoints
+    return keypoints, output_image
 
 
 if __name__ == '__main__':

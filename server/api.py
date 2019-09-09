@@ -3,13 +3,8 @@
 #
 # Author: alex
 # Created Time: 2019年09月02日 星期一 10时12分24秒
-from extract_pose import get_image_pose
+from extract_pose import image_pose
 from extract_pose_video import get_video_pose
-
-
-def image_pose(image_path, output_path=None):
-    points = get_image_pose(image_path, output_path=output_path)
-    return points.tolist()
 
 
 def video_pose(video_path, output_path='out_video.avi'):
