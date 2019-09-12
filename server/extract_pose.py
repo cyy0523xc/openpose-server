@@ -29,33 +29,38 @@ params["model_folder"] = MODEL_ROOT
 # Construct OpenPose object allocates GPU memory
 
 
-def image_pose(pic='', pic_path='', image_type='jpg',
+def image_pose(image='', image_path='', image_type='jpg',
                return_data=True, return_image=False):
     """获取一个图片的人体关键点
-    :param pic 图片对象使用base64编码
-    :param pic_path 图片路径
+    :param image 图片对象使用base64编码
+    :param image_path 图片路径
     :param image_type 输入图像类型, 取值jpg或者png
     :param return_data 是否返回数据，默认为True。
     :param return_image 是否返回图片对象，base64编码，默认值为false
-        当return_image=true时，返回值为{'pic': 图片对象}，pic值也是base64编码
-    :return {'keypoints': [], 'pic': str}
+        当return_image=true时，返回值为{'image': 图片对象}，image值也是base64编码
+    :return {'keypoints': [], 'image': str}
     """
     # Read new image
-    img = parse_input_image(pic=pic, pic_path=pic_path, image_type=image_type)
+    img = parse_input_image(image=image, image_path=image_path,
+                            image_type=image_type)
     keypoints, output_image = do_image_pose(img)
 
     data = {}
     if return_data:
         data['keypoints'] = keypoints.tolist()
 
+    out_img = None
     if return_image:
         # output logo
         h, w, _ = output_image.shape
         cv2.putText(output_image, 'DeeAo AI Team', (w-250, h-12),
                     cv2.FONT_HERSHEY_SIMPLEX, 1.0, (128, 255, 0), 2)
-        data['pic'] = parse_output_image(output_image)
+        out_img = parse_output_image(output_image)
 
-    return data
+    return {
+        'data': data,
+        'image': out_img,
+    }
 
 
 def do_image_pose(img):
@@ -86,5 +91,5 @@ if __name__ == '__main__':
     else:
         raise Exception('need params: image_path')
 
-    keypoints = get_image_pose(image_path, output_path=output_path)
+    keypoints = image_pose(image_path)
     print(keypoints)
