@@ -81,6 +81,14 @@ def do_image_pose(img):
     return keypoints, output_image
 
 
+def get_demo_image(path):
+    """获取演示图片"""
+    img = cv2.imread(path)
+    return {
+        'image': parse_output_image(img)
+    }
+
+
 if __name__ == '__main__':
     import sys
     image_path, output_path = None, None
